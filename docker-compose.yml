@@ -1,0 +1,126 @@
+version: '3'
+services:
+  discovery-service:
+    image: abe/discovery-service
+    expose:
+      - 8001
+    networks:
+      - abe-network
+
+  gateway-service:
+    image: abe/gateway-service
+    ports:
+      - 8090:8090
+    depends_on:
+      - discovery-service
+    networks:
+      - abe-network
+
+  frontend:
+    image: abe/frontend
+    depends_on:
+      - database-service
+      - settings-service
+      - discovery-service
+    networks:
+      - abe-network
+
+  measurement-service:
+    image: abe/measurement-service
+    expose:
+      - 8099
+    ports:
+      - 56700-56800/udp
+      - 56900-57000/tcp
+    environment:
+      - UDP_PORT_LOWER_BOUND=56700
+      - UDP_PORT_UPPER_BOUND=56800
+      - TCP_PORT_LOWER_BOUND=56900
+      - TCP_PORT_UPPER_BOUND=57000
+      - DISCOVERY_SERVICE_NAME=discovery-service
+      - DISCOVERY_SERVICE_PORT=8001
+      - INSTANCE_NAME=measurement-service
+      - INSTANCE_PORT=8099
+      - RUST_LOG=info
+    depends_on:
+      - discovery-service
+      - reverse-port-service
+    networks:
+      - abe-network
+
+  reverse-port-service:
+    image: abe/reverse-port-service
+    expose:
+      - 8010
+    depends_on:
+      - discovery-service
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - abe-network
+
+  settings-service:
+    image: abe/settings-service
+    expose:
+      - 8020
+    depends_on:
+      - discovery-service
+      - postgres-settings-service
+    networks:
+      - abe-network
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-settings-service:${DATABASE_PORT}/${DATABASE_NAME_SETTINGS}
+      - SPRING_DATASOURCE_USERNAME=${DATABASE_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD}
+      - spring.flyway.url=jdbc:postgresql://postgres-settings-service:${DATABASE_PORT}/${DATABASE_NAME_SETTINGS}
+      - spring.flyway.user=${DATABASE_USER}
+      - spring.flyway.password=${DATABASE_PASSWORD}
+
+  postgres-settings-service:
+    image: postgres:11.3-alpine
+    container_name: postgres-settings-service
+    volumes:
+      - ./data/settings-service/postgres-data:/var/lib/postgresql/data
+    networks:
+      - abe-network
+    environment:
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME_SETTINGS}
+    ports:
+      - 5432 #TODO: change to expose
+    restart: always
+
+  database-service:
+    image: abe/database-service
+    depends_on:
+      - discovery-service
+      - postgres-database-service
+      - settings-service
+    networks:
+      - abe-network
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-database-service:${DATABASE_PORT}/${DATABASE_NAME_MEASUREMENTS}
+      - SPRING_DATASOURCE_USERNAME=${DATABASE_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD}
+      - spring.flyway.url=jdbc:postgresql://postgres-database-service:${DATABASE_PORT}/${DATABASE_NAME_MEASUREMENTS}
+      - spring.flyway.user=${DATABASE_USER}
+      - spring.flyway.password=${DATABASE_PASSWORD}
+
+  postgres-database-service:
+    image: postgres:11.3-alpine
+    container_name: postgres-database-service
+    volumes:
+      - ./data/database-service/postgres-data:/var/lib/postgresql/data
+    networks:
+      - abe-network
+    environment:
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME_MEASUREMENTS}
+    ports: #TODO: change to expose
+      - 5432
+    restart: always
+
+networks:
+  abe-network: {}

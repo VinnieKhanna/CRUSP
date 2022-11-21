@@ -1,0 +1,17 @@
+[development]
+address = "localhost"
+port = 8099
+log = "normal"
+#workers = [number of cpus * 2]
+#keep_alive = 5
+#secret_key = [randomly generated at launch]
+#limits = { forms = 32768 }
+
+[production]
+address = "0.0.0.0"
+port = 8099
+log = "normal" # normal, debug or cricitcal
+workers = 16 # [number of cpus * 2] - hossman has 8 cores
+keep_alive = 0 # indicating the minimum amount of time an idle connection has to be kept opened (in seconds), no multiple access is needed
+# secret_key = [randomly generated at launch]
+limits = { forms = 32768 } # maximum amount of data rocket will accept for a givewn data type

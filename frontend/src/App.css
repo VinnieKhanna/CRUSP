@@ -1,0 +1,35 @@
+:root {
+  --Primary: #6200EE;
+  --Primary_Variant1: #3700B3;
+  --Primary_Variant2: #BB86FC;
+  --Primary_Variant3: #F3E5F5;
+  --Secondary: #03DAC6;
+  --Secondary_Variant: #018786;
+  --Background: #FFFFFF;
+  --Surface: #FFFFFF;
+  --Error: #B00020;
+
+  --On_Primary1: #FFFFFF;
+  --On_Primary_Variant2: #000000;
+  --On_Primary_Variant3: #FFFFFF;
+  --On_Secondary: #000000;
+  --On_Background: #000000;
+  --On_Surface: #000000;
+  --On_Error: #FFFFFF;
+  --Disabled: #CCCCCC;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: var(--Background);
+  min-height: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: var(--Primary);
+}

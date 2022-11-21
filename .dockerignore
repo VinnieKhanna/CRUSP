@@ -1,0 +1,9 @@
+#Ignore everything
+**
+
+# Allow files
+!/measurement_server/**
+!/measurement_shared_rust/**
+
+# ignore unnecessary folders and files inside allowed files
+**/target

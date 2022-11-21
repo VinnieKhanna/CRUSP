@@ -1,0 +1,13 @@
+[package]
+name = "measurement_client_standalone"
+version = "0.1.0"
+authors = ["Wolfgang Hofer <e1126742@student.tuwien.ac.at>"]
+edition = "2018"
+
+[dependencies]
+clap = "2.33.0"
+measurement_client_rust = {path = "../measurement_client_rust"}
+measurement_shared_rust = {path = "../measurement_shared_rust"}
+log = "0.4.8"
+env_logger = "0.6.2"
+csv = "1.1.2"

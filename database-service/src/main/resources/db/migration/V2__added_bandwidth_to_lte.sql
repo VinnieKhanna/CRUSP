@@ -1,0 +1,1 @@
+ALTER TABLE lte ADD bandwidth integer;

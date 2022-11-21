@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="at.ac.tuwien.nt.abe">
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <service
+            android:name=".services.ContinuousMeasurementService"
+            android:enabled="true"
+            android:exported="false"></service>
+        <service
+            android:name=".services.MeasurementService"
+            android:enabled="true"
+            android:exported="true"></service>
+        <service
+            android:name=".services.PersistMeasurementService"
+            android:exported="false" />
+        <service android:name=".services.GetSettingsService" />
+
+        <activity
+            android:name=".ResultDetailsActivity"
+            android:label="@string/title_activity_result_details"
+            android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="at.ac.tuwien.nt.abe.MainActivity" />
+        </activity>
+        <activity
+            android:name=".PacketDeltaActivity"
+            android:label="@string/title_activity_package_delta"
+            android:parentActivityName=".ResultDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="at.ac.tuwien.nt.abe.ResultDetailsActivity" />
+        </activity>
+        <activity
+            android:name=".BurstRateActivity"
+            android:label="@string/burst_rate_chart"
+            android:parentActivityName=".ResultDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="at.ac.tuwien.nt.abe.ResultDetailsActivity" />
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

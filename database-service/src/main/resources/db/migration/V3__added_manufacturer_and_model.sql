@@ -1,0 +1,15 @@
+ALTER TABLE lte ADD manufacturer varchar(255);
+ALTER TABLE lte ADD model varchar(255);
+ALTER TABLE lte ADD gps_accuracy numeric;
+ALTER TABLE wcdma ADD manufacturer varchar(255);
+ALTER TABLE wcdma ADD model varchar(255);
+ALTER TABLE wcdma ADD gps_accuracy numeric;
+ALTER TABLE cdma ADD manufacturer varchar(255);
+ALTER TABLE cdma ADD model varchar(255);
+ALTER TABLE cdma ADD gps_accuracy numeric;
+ALTER TABLE gsm ADD manufacturer varchar(255);
+ALTER TABLE gsm ADD model varchar(255);
+ALTER TABLE gsm ADD gps_accuracy numeric;
+ALTER TABLE wifi ADD manufacturer varchar(255);
+ALTER TABLE wifi ADD model varchar(255);
+ALTER TABLE wifi ADD gps_accuracy numeric;

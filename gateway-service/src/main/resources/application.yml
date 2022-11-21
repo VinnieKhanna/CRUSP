@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: gateway-service
+
+logging:
+  level:
+    org.springframework.web: INFO
+
+server:
+  port: 8090
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-service:8001/eureka
+    registerWithEureka: false # doesn't need to register with eureka
+    fetchRegistry: true
+    initial-instance-info-replication-interval-seconds: 0
+    instance-info-replication-interval-seconds: 5
+    registry-fetch-interval-seconds: 2
+
+zuul:
+  ribbon:
+    eager-load:
+      enabled: true
+  health:
+    enabled: true
+  routes:
+    frontend:
+      path: /frontend/**
+      url: http://frontend:80
+      sensitiveHeaders:
+    database-service:
+      path: /database/** # all calls to /database/measurement/{id} get forwarded to the database-service as /measurement/{id}
+      sensitiveHeaders:
+    measurement-service:
+      path: /measurement/**
+      sensitiveHeaders:
+    settings-service:
+      path: /settings/**
+      sensitiveHeaders:
+  add-proxy-headers: true
+
+database-service:
+  ribbon:
+    ReadTimeout: 20000

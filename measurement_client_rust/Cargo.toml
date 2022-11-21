@@ -1,0 +1,32 @@
+[package]
+name = "measurement_client_rust"
+version = "0.1.0"
+authors = ["Wolfgang Hofer <e1126742@student.tuwien.ac.at>"]
+edition = "2018"
+
+[dependencies]
+byteorder = "1.3.1"
+measurement_shared_rust = {path = "../measurement_shared_rust"}
+serde_json = "1.0.39"
+log = "0.4.6"
+net2 = "0.2.33"
+
+[dependencies.minreq]
+version="2.6.0"
+features=["json-using-serde"]
+
+[dependencies.reqwest]
+version = "0.9.13"
+default-features=false
+#features=["rustls-tls"]
+
+[dev-dependencies]
+simulacrum = "0.3.1"
+
+[lib]
+crate-type = ["dylib"]
+
+[target.'cfg(target_os="android")'.dependencies]
+jni = { version = "0.12", default-features = false }
+android_logger = "0.8.3"
+
