@@ -13,6 +13,7 @@ const SETTINGS_BASE_ADDRESS :&str ="http://settings-service:8020/v1/verify";
 
 pub fn get_public_port(local_port: u16) -> Result<u16, CruspError> {
     let local_ip_address: String = get_local_ip_address();
+    info!("local ip: {}", local_ip_address);
     let reqwest_string: String = format!("{}/{}/{}", REVERSE_PORT_BASE_ADDRESS, local_ip_address, local_port);
     let res_string: String = reqwest::get(reqwest_string.as_str())?.text()?;
     let public_port: u16 = res_string.parse::<u16>()?;
@@ -22,11 +23,11 @@ pub fn get_public_port(local_port: u16) -> Result<u16, CruspError> {
 
 pub fn get_local_ip_address() -> String  {
     match sh("ip addr show eth0 | grep 'inet' | awk '{print $2}' | cut -f1 -d'/'").read() {
-        Ok(ip) => {
+        Ok(ip) if ip != "Device \"eth0\" does not exist." && ip != "" => {
             info!("Found local IP Address of container");
             ip
         },
-        Err(_e) => {
+        _ => { // If "Device not found" message, also do this 
             error!("Could not query for local ip address of container");
             "localhost".to_string()
         }
@@ -36,7 +37,6 @@ pub fn get_local_ip_address() -> String  {
 pub fn validate_token(token: &Token) -> Result<bool, CruspError> {
     let reqwest_string: String = format!("{}", SETTINGS_BASE_ADDRESS);
 
-        info!("\n\ndoes this break?");
         info!("{}\n\n", reqwest_string);
 
     // let client = reqwest::Client::new();

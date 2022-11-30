@@ -29,6 +29,8 @@ fn downlink_request(_addr: SocketAddr, token: Json<Token>) -> Result<Json<Ports>
     info!("Received downlink measurement request");
     let token: Token = token.into_inner();
 
+    debug!("Vinnie: Bypass validating token (downlink req) for our purposes");
+    /*
     info!("Validate following settings: repeats={}, volume={}, packet-size={}, rate={}, sleep={}, timeout={}", token.repeats, token.volume, token.packet_size, token.rate, token.sleep, token.timeout);
     if let Err(e) = validate_token(&token) {
         warn!("Invalid token");
@@ -36,6 +38,7 @@ fn downlink_request(_addr: SocketAddr, token: Json<Token>) -> Result<Json<Ports>
     } else {
         debug!("Received settings validation for repeats={}, volume={}, packet-size={}, rate={}, sleep={}, timeout={}", token.repeats, token.volume, token.packet_size, token.rate, token.sleep, token.timeout);
     }
+    */
 
     debug!("init communication");
     let udp_socket = match init_communication_downlink(&token) {
@@ -43,10 +46,12 @@ fn downlink_request(_addr: SocketAddr, token: Json<Token>) -> Result<Json<Ports>
         Err(e) => return Err( BadRequest( Some(e.msg.to_string()))),
     };
 
-    let global_port = match get_public_port(udp_socket.local_addr().unwrap().port()) {
-        Ok(port) => port,
-        Err(e) => return Err (BadRequest( Some(e.msg.to_string()))),
-    };
+    debug!("Vinnie: Bypass reverse port service finding public port");
+    let global_port = udp_socket.local_addr().unwrap().port();
+    // let global_port = match get_public_port(udp_socket.local_addr().unwrap().port()) {
+    //     Ok(port) => port,
+    //     Err(e) => return Err (BadRequest( Some(e.msg.to_string()))),
+    // };
     let ports = Ports{udp_port: global_port, tcp_port: None};
 
     debug!("start measurement process");
@@ -70,13 +75,14 @@ fn uplink_request(_addr: SocketAddr, token: Json<Token>) -> Result<Json<Ports>, 
     info!("Received uplink measurement request");
     let token: Token = token.into_inner();
 
-    info!("Validate following settings: repeats={}, volume={}, packet-size={}, rate={}, sleep={}, timeout={}", token.repeats, token.volume, token.packet_size, token.rate, token.sleep, token.timeout);
+    info!("Vinnie: Bypass validating token (uplink req) for our purposes");
+    /* info!("Validate following settings: repeats={}, volume={}, packet-size={}, rate={}, sleep={}, timeout={}", token.repeats, token.volume, token.packet_size, token.rate, token.sleep, token.timeout);
     if let Err(e) = validate_token(&token) {
         warn!("Invalid token");
         return Err(BadRequest(Some(String::from("Invalid token - ") + &e.msg)));
     } else {
         debug!("Received settings validation for repeats={}, volume={}, packet-size={}, rate={}, sleep={}, timeout={}", token.repeats, token.volume, token.packet_size, token.rate, token.sleep, token.timeout);
-    }
+    } */
 
     debug!("init communication");
     let (udp_socket, tcp_listener) = match init_communication_uplink() {
@@ -84,6 +90,10 @@ fn uplink_request(_addr: SocketAddr, token: Json<Token>) -> Result<Json<Ports>, 
         Err(e) => return Err( BadRequest( Some(e.msg.to_string()))),
     };
 
+    debug!("Vinnie: Bypass reverse port service finding public ports");
+    let global_port_udp = udp_socket.local_addr().unwrap().port();
+    let global_port_tcp = tcp_listener.local_addr().unwrap().port();
+    /*
     // get exposed ports so that they are reachable from outside of the system
     let global_port_udp = match get_public_port(udp_socket.local_addr().unwrap().port()) {
         Ok(port) => port,
@@ -93,6 +103,7 @@ fn uplink_request(_addr: SocketAddr, token: Json<Token>) -> Result<Json<Ports>, 
         Ok(port) => port,
         Err(e) => return Err (BadRequest( Some(e.msg.to_string()))),
     };
+    */
     let ports = Ports{udp_port: global_port_udp, tcp_port: Some(global_port_tcp)};
 
     debug!("start uplink measurement process");

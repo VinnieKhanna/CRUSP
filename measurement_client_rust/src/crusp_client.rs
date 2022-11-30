@@ -23,7 +23,7 @@ pub fn init_measurement_request(token: &Token, measurement_uri: String) -> Resul
         .timeout(Duration::from_millis(HTTP_REQUEST_TIMEOUT_IN_MILLIS))
         .build()?;
 
-    info!("\n\n{}\n", measurement_uri.as_str());
+    debug!("Fully qualified request route: {}", measurement_uri.as_str());
     //info!("\n\n{:?}\n", token);
     // let mut response = client
     //     .post(measurement_uri.as_str())
@@ -31,7 +31,6 @@ pub fn init_measurement_request(token: &Token, measurement_uri: String) -> Resul
     //     .send()?;
     //let mut response = reqwest::get("http://127.0.0.1:8099")?;
     let response = minreq::post(measurement_uri.as_str()).with_json(token)?.send()?;
-    info!("{}", response.status_code);
     if response.status_code == 200 {
         info!("Measurement POST request sucessful");
         Ok( response.json()? )
@@ -55,9 +54,8 @@ pub fn init_measurement_request(token: &Token, measurement_uri: String) -> Resul
 pub fn measure_downlink(token: Token, host: String, port: u32, path: String) -> Result<MeasurementResult, CruspError> {
     // Uplink request to measurement service
     let measurement_uri_start = format!("http://{}:{}/{}", host, port, path);
-    println!("\n broke here! \n");
     let ports = init_measurement_request(&token, measurement_uri_start)?; //
-    println!("\n broke here!! \n");
+    debug!("\n got downlink req ports from server: udp: {}\n", ports.udp_port);
     let socket_uri = format!("{}:{}", host, ports.udp_port); //no http since a UDP-connection is needed
     let (udp_socket, recv_addr_udp) = init_udp_communication_to_server(socket_uri)?;
 
@@ -137,6 +135,8 @@ pub fn measure_uplink(token: Token, host: String, port: u32, path: String) -> Re
     // 3. bind local UDP socket and init UDP connection to measurement service
     let udp_socket_uri: String = format!("{}:{}", host, ports.udp_port); //no http since a UDP-connection is needed
     let (udp_socket, recv_addr_udp) = init_udp_communication_to_server(udp_socket_uri)?;
+
+    debug!("\n got uplink req ports from server: udp: {}, tcp: {}\n", ports.udp_port, ports.tcp_port.unwrap());
 
     // 4. set optimal udp send buffer
     set_optimal_udp_socket_send_buffer(&udp_socket, &token)?;

@@ -1,4 +1,4 @@
-use log::{info, error};
+use log::{info, error, debug};
 use env_logger;
 use clap::{Arg, App};
 use csv;
@@ -9,7 +9,6 @@ use measurement_shared_rust::results::MeasurementResult;
 use measurement_client_rust::crusp_client::{measure_downlink, measure_uplink};
 
 fn main() {
-    println!("sample log");
     env_logger::init();
 
     let (token, host, port, downlink, debug, write) = match init_settings() {
@@ -20,7 +19,7 @@ fn main() {
         }
     };
 
-    println!("passed arg checking");
+    debug!("Passed client arg checking");
 
     let result = if downlink {
         info!("Value for path: measurement/downlink");
@@ -32,8 +31,11 @@ fn main() {
     match result {
         Ok(res) => {
             print_result(&res, debug);
-
+            println!("hm?");
             if let Some(filename) = write {
+                println!("hm?");
+                println!("{}", filename);
+                
                 write_result_to_csv(&res, filename);
             }
 
@@ -255,9 +257,12 @@ fn init_settings() -> Result<(Token, String, u32, bool, bool, Option<String>), C
     info!("Value for debug: {}", debug);
 
     let mut downlink = true;
-    if matches.occurrences_of("debug") > 0 {
+    if matches.occurrences_of("uplink") > 0 {
         downlink = false;
     }
+    // if matches.occurrences_of("debug") > 0 {
+    //     downlink = false;
+    // }
     info!("Value for downlink: {}", downlink);
 
     let arg_sleep_repeats = matches.value_of("sleep_repeats").unwrap_or("200");
