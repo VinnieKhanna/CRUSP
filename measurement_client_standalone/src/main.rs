@@ -31,11 +31,7 @@ fn main() {
     match result {
         Ok(res) => {
             print_result(&res, debug);
-            println!("hm?");
-            if let Some(filename) = write {
-                println!("hm?");
-                println!("{}", filename);
-                
+            if let Some(filename) = write {                
                 write_result_to_csv(&res, filename);
             }
 
