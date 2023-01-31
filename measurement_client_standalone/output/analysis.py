@@ -11,7 +11,7 @@ fig.suptitle("CRUSP Bandiwdth Measurement Results (Mbps)")
 fig.subplots_adjust(hspace=.6, wspace=.6)
 count = 1
 for filename in files:
-    if ".txt" not in filename and ".py" not in filename:  
+    if ".txt" not in filename and ".py" not in filename and "6-23" in filename:  
         rates_list, packets_list = [], []
         with open(filename, 'r') as f:
             for line in f.readlines():
@@ -24,8 +24,8 @@ for filename in files:
             #data = np.array([rates_list, packets_list]).T
             rates = np.array(rates_list)
             rates_avg = round(np.average(rates), 2)
-            ax = fig.add_subplot(3, 4, count)
-            count += 1
+            ax = fig.add_subplot(4, int(len(files)/4), count)
+            count += 2
             ax.set_title(filename)
             sns.lineplot(x=np.arange(len(rates_list)), y=rates)
             plt.axhline(rates_avg, linestyle="--")
