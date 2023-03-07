@@ -12,7 +12,7 @@ fig.suptitle("CRUSP Bandiwdth Measurement Results (Mbps)")
 fig.subplots_adjust(hspace=.6, wspace=.6)
 count = 1
 for filename in files:
-    if ".py" not in filename and "6-23" in filename and "iperf" not in filename:  
+    if ".py" not in filename and "rtest" in filename and "iperf" not in filename:  
         rates_list, packets_list = [], []
         with open(f"./distance-based/{filename}", 'r') as f:
             for line in f.readlines():
