@@ -12,7 +12,7 @@ fig.suptitle("CRUSP Bandiwdth Measurement Results (Mbps)")
 fig.subplots_adjust(hspace=.6, wspace=.6)
 count = 1
 for filename in files:
-    if ".py" not in filename and "6-23" in filename and "iperf" not in filename:  
+    if "2-6-23" in filename:  
         rates_list, packets_list = [], []
         with open(f"./distance-based/{filename}", 'r') as f:
             for line in f.readlines():
@@ -22,7 +22,6 @@ for filename in files:
                 packets = packets[:packets.index("/")]
                 rates_list.append(float(rate))
                 packets_list.append(int(packets))
-            #data = np.array([rates_list, packets_list]).T
             rates = np.array(rates_list)
             rates_avg = round(np.average(rates), 2)
             ax = fig.add_subplot(2, 4, count)
@@ -35,3 +34,4 @@ for filename in files:
             print(f"{filename} average packets received: {sum(packets_list)/len(packets_list)}/930\n")
     
 plt.show()   
+            #data = np.array([rates_list, packets_list]).T

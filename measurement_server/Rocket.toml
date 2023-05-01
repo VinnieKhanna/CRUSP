@@ -8,7 +8,7 @@ log = "normal"
 #limits = { forms = 32768 }
 
 [production]
-address = "192.168.0.205"
+address = "192.168.1.233"
 port = 8099
 log = "normal" # normal, debug or cricitcal
 workers = 16 # [number of cpus * 2] - hossman has 8 cores
