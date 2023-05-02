@@ -1,6 +1,7 @@
 # Repo Details
 This repo is divided into 
 - `client-scripts/`, which contains scripts I wrote for client probing of the network **on a Windows machine**. If not on Windows, you are free to still use the JSON files and/or `map_mcs_table.py`, but if you are on Linux just prefer to use `iw`.
+    - If on Windows, `py measure_mcs.py` to get live MCS inference for current network.
 - `CRUSP/`, which houses the main codebase cloned from https://gitlab.com/gitlabwolf/infrastructure-for-mobile. The code has been minimally adapted (extracted Dockerfile dependencies, replaced HTTP request library, disconnected auxillary services) such that the Rust binaries can be run locally with `cargo` as detailed in the next section.
     - `CRUSP/measurement_server` contains the code for spawning the CRUSP server
     - `CRUSP/measurement_client_standalone` contains the code for spawning a CRUSP client.
